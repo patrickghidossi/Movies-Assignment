@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Movies Assignment</title>
+	<script   src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+	<script>
+
+
+
+
+
+//Movies data
+
+//var moviesData = $.get("http://159.203.175.239:8080/movies.txt");
+
+
+//Test Values 
+
+var testValues = ("user18 feb 46\nuser60 dec 220\nuser61 nov 43\nuser83 oct 144\nuser11 dec 159\nuser60 oct 187\nuser45 nov 174\nuser95 jun 83\nuser66 may 193\nuser61 dec 7\nuser74 apr 24");
+
+// var newArray = testValues.split("\n");
+
+// console.log(newArray);
+
+	//Organize data into a 2-dimensional array
+	
+	function createArray(response){
+		var returnArray = new Array();
+		returnArray[0] = new Array();
+		returnArray[1] = new Array();
+		returnArray[2] = new Array();
+
+		var array1D = response.split("\n");
+
+		for (var i = 0; i < array1D.length; i++) {	
+			tempArray = array1D[i].split(" ");
+			returnArray[0].push(tempArray[0]);
+			returnArray[1].push(tempArray[1]);
+			returnArray[2].push(tempArray[2]);	
+		} 
+
+		return returnArray;																
+	}	
+
+	//Find number of occurrences 
+
+	function mode(data2d, column){
+		var data = data2d[column];
+		var returnArray = new Array();
+		var counts = new Array();
+		counts[0] = new Array();      //List of values
+		counts[1] = new Array();	 //Number of occurrences 
+		var maxOccurence = 1;
+
+		for(var i = 0; i < data.length; i++){   //Finds number of occurrences
+			if(counts[0].includes(data[i])){
+				//Load current value
+				var currentValue = data[i]; 
+				//Find index of current value
+				var indexOfExistingElement = counts[0].indexOf(currentValue,0); 
+				//Increment occurrence number of that value
+				counts[1][indexOfExistingElement]++;
+			} else {
+				counts[0].push(data[i]);
+				counts[1].push(1);
+			} 
+		} 
+
+		//Finding the greatest occurrence value 
+		for (var j = 0; j < counts[0].length; j++){
+			if (counts[1][j] > maxOccurence) {
+				maxOccurence = counts[1][j];
+			}	
+		}	
+
+		//Accounting for multiple max occurrences
+		//If the number of occurrences is equal to the max occurrence, push the corresponding value to the new array
+
+		for(var k = 0; k < counts[0].length; k++){
+			if(counts[1][k] === maxOccurence){
+				returnArray.push(counts[0][k]);
+			}
+		}
+		return returnArray; 
+	}
+
+
+
+	//Users Data
+
+	$.get("http://159.203.175.239:8080/checkouts.txt", function (response){
+		var userArray = createArray(response);
+		console.log(mode(userArray,2));
+	});
+
+ /*
+    //Movies Data
+
+	$.get("http://159.203.175.239:8080/movies.txt", function (response){
+		var moviesArray = createArray(response);
+		console.log(mode(moviesArray,0));
+	});
+
+ */
+
+/* 
+
+RESULTS 
+
+User(s) with most checkouts: user 30
+
+Month(s) with most checkouts: December
+
+Movie(s) most checked out: 169 - Into The Wild
+
+*/
+	</script>
+</body>
+</html>
